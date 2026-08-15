@@ -13,8 +13,8 @@
 <meta property="og:site_name" content="Aniversário do Enrico">
 <meta property="og:title" content="Enrico faz 1 aninho! 🐮">
 <meta property="og:description" content="21/11/2026 às 11h. Toque para confirmar sua presença na fazendinha do Enrico.">
-<meta property="og:url" content="https://enricoumano.github.io/enricoumano/">
-<meta property="og:image" content="https://enricoumano.github.io/enricoumano/convite.jpg">
+<meta property="og:url" content="https://enricoumano.github.io/">
+<meta property="og:image" content="https://enricoumano.github.io/convite.jpg">
 <meta property="og:image:width" content="1054">
 <meta property="og:image:height" content="1492">
 <meta property="og:image:alt" content="Convite do aniversário de 1 ano do Enrico, tema fazendinha">
@@ -558,6 +558,64 @@
     font-size:12px;
   }
 
+  /* ---------- aviso de confirmação repetida ---------- */
+  .dup-box{
+    display:none;
+    margin-top:14px;
+    background:#fdf3d6;
+    border:1.5px solid var(--gold);
+    border-radius:14px;
+    padding:14px 16px;
+    color:#7a5c12;
+    font-size:14px;
+    line-height:1.5;
+  }
+  .dup-box.show{display:block;}
+  .dup-box .dup-title{
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    font-size:15px;
+    color:#8a6a1f;
+    margin-bottom:6px;
+  }
+  .dup-box ul{margin:6px 0 8px; padding-left:20px;}
+  .dup-box li{margin-bottom:3px;}
+  .dup-box p{margin:0 0 12px;}
+  .dup-box .dup-actions{display:flex; flex-wrap:wrap; gap:8px;}
+  .dup-box .dup-actions .btn{flex:1 1 140px; font-size:14px; padding:11px 16px;}
+
+  /* ---------- botões de excluir (painel do organizador) ---------- */
+  .family-block li .del-guest{
+    flex:0 0 auto;
+    width:32px; height:32px;
+    display:flex; align-items:center; justify-content:center;
+    background:none;
+    border:none;
+    color:#c2b3a0;
+    font-size:19px;
+    font-weight:700;
+    line-height:1;
+    border-radius:8px;
+    cursor:pointer;
+    padding:0;
+  }
+  .family-block li .del-guest:hover{background:#fbe6e2; color:var(--barn);}
+  .del-family{
+    width:100%;
+    margin-top:10px;
+    background:none;
+    border:1.5px dashed #d6c3ae;
+    color:#a08a72;
+    font-family:'Fredoka',sans-serif;
+    font-size:12.5px;
+    font-weight:600;
+    border-radius:10px;
+    padding:9px;
+    min-height:40px;
+    cursor:pointer;
+  }
+  .del-family:hover{background:#fbe6e2; border-color:var(--barn); color:var(--barn);}
+
   /* ================= ajustes de mobile ================= */
 
   /* alvos de toque confortáveis (mínimo recomendado: 44px) */
@@ -637,6 +695,7 @@
       <button type="button" class="add-guest" onclick="addGuest()">+ Adicionar convidado</button>
 
       <div id="formMsg" class="msg"></div>
+      <div id="dupBox" class="dup-box"></div>
 
       <button type="submit" class="btn submit-btn" id="submitBtn">Confirmar presença ✓</button>
     </form>
@@ -680,6 +739,7 @@
 
     <div style="text-align:center;">
       <button class="back-link" onclick="goTo('invite')">← Voltar ao convite</button>
+      <button class="back-link" onclick="sairDoPainel()">Sair do painel</button>
     </div>
   </div>
 </section>
@@ -693,7 +753,7 @@
     <div class="pin-error" id="pinError">Código incorreto. Tente novamente.</div>
     <div class="pin-actions">
       <button class="btn secondary" onclick="closePinGate()">Cancelar</button>
-      <button class="btn" onclick="checkPin()">Entrar</button>
+      <button class="btn" id="pinSubmit" onclick="checkPin()">Entrar</button>
     </div>
   </div>
 </div>
@@ -706,41 +766,37 @@
    Google Apps Script (termina em /exec). Veja o README.md do repositório.
    ===================================================================== */
 const CONFIG = {
-  APPS_SCRIPT_URL: "COLE_AQUI_A_URL_DO_APPS_SCRIPT",
-  ORGANIZER_PIN: "2611"
+  APPS_SCRIPT_URL: "COLE_AQUI_A_URL_DO_APPS_SCRIPT"
 };
+/* O PIN do organizador NÃO fica aqui: ele mora no Apps Script, no servidor.
+   Se estivesse nesta página, qualquer convidado o veria no código-fonte —
+   e agora existe exclusão, que é destrutiva. */
 
 const isConfigured = () => /^https:\/\/script\.google\.com\//.test(CONFIG.APPS_SCRIPT_URL);
 
 /* ---------------------- camada de dados (Google Sheets) ---------------------- */
 /* Enviamos o corpo como texto puro de propósito: assim o navegador trata a
    requisição como "simples" e não dispara o preflight OPTIONS, que o Apps
-   Script não sabe responder. */
-async function apiSave(entry){
+   Script não sabe responder. Tudo vai por POST para o PIN nunca aparecer
+   na URL (que fica em histórico e em log de servidor). */
+async function api(payload){
   const res = await fetch(CONFIG.APPS_SCRIPT_URL, {
     method: 'POST',
-    body: JSON.stringify(entry),
+    body: JSON.stringify(payload),
     redirect: 'follow'
   });
   if(!res.ok) throw new Error('HTTP ' + res.status);
-  const data = await res.json();
-  if(!data.ok) throw new Error(data.error || 'resposta inválida');
-  return data;
-}
-
-async function apiList(){
-  const url = CONFIG.APPS_SCRIPT_URL + '?action=list&t=' + Date.now();
-  const res = await fetch(url, { redirect: 'follow' });
-  if(!res.ok) throw new Error('HTTP ' + res.status);
-  const data = await res.json();
-  if(!data.ok) throw new Error(data.error || 'resposta inválida');
-  return data.families || [];
+  return res.json();   // devolve cru: quem chama trata ok/duplicate/pinInvalido
 }
 
 /* ---------------------- PIN do organizador ---------------------- */
+/* guardado só enquanto a aba estiver aberta */
+let organizerPin = sessionStorage.getItem('rsvpPin') || '';
+
 function openPinGate(){
+  if(organizerPin){ goTo('list'); return; }   // já autenticado nesta sessão
   document.getElementById('pinOverlay').classList.add('show');
-  document.getElementById('pinError').classList.remove('show');
+  setPinError('');
   const input = document.getElementById('pinInput');
   input.value = '';
   setTimeout(() => input.focus(), 100);
@@ -748,15 +804,57 @@ function openPinGate(){
 function closePinGate(){
   document.getElementById('pinOverlay').classList.remove('show');
 }
-function checkPin(){
+function setPinError(texto){
+  const el = document.getElementById('pinError');
+  el.textContent = texto;
+  el.classList.toggle('show', !!texto);
+}
+
+async function checkPin(){
   const val = document.getElementById('pinInput').value.trim();
-  if(val === CONFIG.ORGANIZER_PIN){
+  const btn = document.getElementById('pinSubmit');
+  if(!val) return;
+
+  if(!isConfigured()){
+    setPinError('O site ainda não foi conectado à planilha.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Entrando…';
+  setPinError('');
+
+  try{
+    // o próprio servidor valida o PIN; se aceitar, já devolve a lista
+    const data = await api({ action:'list', pin: val });
+    if(data.pinInvalido){
+      setPinError('Código incorreto. Tente novamente.');
+      return;
+    }
+    if(!data.ok) throw new Error(data.error || 'resposta inválida');
+
+    organizerPin = val;
+    sessionStorage.setItem('rsvpPin', val);
+    families = data.families || [];
     closePinGate();
-    goTo('list');
-  } else {
-    document.getElementById('pinError').classList.add('show');
+    showPage('list');
+    renderList();
+  }catch(err){
+    console.error(err);
+    setPinError('Não consegui falar com a planilha agora.');
+  }finally{
+    btn.disabled = false;
+    btn.textContent = 'Entrar';
   }
 }
+
+function sairDoPainel(){
+  organizerPin = '';
+  sessionStorage.removeItem('rsvpPin');
+  families = [];
+  goTo('invite');
+}
+
 document.getElementById('pinInput').addEventListener('keydown', (e) => {
   if(e.key === 'Enter') checkPin();
 });
@@ -810,10 +908,14 @@ function toggleAge(id, checkbox){
 // começa com uma linha de convidado
 addGuest();
 
-function goTo(name){
+function showPage(name){
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
   document.getElementById('page-' + name).classList.add('active');
   window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function goTo(name){
+  showPage(name);
   if(name === 'list'){ loadGuestList(); }
 }
 
@@ -862,29 +964,75 @@ document.getElementById('rsvpForm').addEventListener('submit', async function(e)
     guests.push({ name, isChild, age: isChild ? Number(ageInput) : null });
   }
 
-  const entry = {
+  enviarConfirmacao({
+    action: 'save',
     responsavel: responsavel || 'Convidado',
     guests,
     submittedAt: new Date().toISOString()
-  };
+  }, false);
+});
+
+/* O servidor recusa a gravação se algum nome já constar na lista e devolve
+   quais foram. Como duas pessoas podem legitimamente ter o mesmo nome,
+   oferecemos "confirmar mesmo assim", que reenvia com force:true. */
+async function enviarConfirmacao(entry, forcar){
+  if(sending) return;
+
+  const msgEl = document.getElementById('formMsg');
+  const btn = document.getElementById('submitBtn');
+  const dupBox = document.getElementById('dupBox');
+
+  msgEl.style.display = 'none';
+  dupBox.classList.remove('show');
 
   sending = true;
   btn.disabled = true;
   btn.textContent = 'Enviando…';
 
   try{
-    await apiSave(entry);
+    const data = await api(Object.assign({}, entry, { force: forcar === true }));
+
+    if(data.duplicate){
+      mostrarDuplicados(data.matches || [], entry);
+      return;
+    }
+    if(!data.ok) throw new Error(data.error || 'resposta inválida');
+
     document.getElementById('rsvpForm').style.display = 'none';
     document.getElementById('successBox').classList.add('show');
   }catch(err){
     console.error(err);
-    fail('Não foi possível salvar agora. Verifique sua internet e tente novamente.');
+    msgEl.textContent = 'Não foi possível salvar agora. Verifique sua internet e tente novamente.';
+    msgEl.className = 'msg error';
+    msgEl.style.display = 'block';
   }finally{
     sending = false;
     btn.disabled = false;
     btn.textContent = 'Confirmar presença ✓';
   }
-});
+}
+
+function mostrarDuplicados(matches, entry){
+  const dupBox = document.getElementById('dupBox');
+  const itens = matches.map(m => {
+    const porQuem = m.responsavel ? ` — confirmado por ${escapeHtml(m.responsavel)}` : '';
+    return `<li><strong>${escapeHtml(m.nome)}</strong>${porQuem}</li>`;
+  }).join('');
+
+  dupBox.innerHTML = `
+    <div class="dup-title">Essa confirmação já existe</div>
+    <ul>${itens}</ul>
+    <p>Se for outra pessoa com o mesmo nome, pode confirmar assim mesmo.</p>
+    <div class="dup-actions">
+      <button type="button" class="btn secondary" id="dupCancel">Deixa pra lá</button>
+      <button type="button" class="btn" id="dupForce">Confirmar mesmo assim</button>
+    </div>`;
+  dupBox.classList.add('show');
+
+  document.getElementById('dupCancel').onclick = () => dupBox.classList.remove('show');
+  document.getElementById('dupForce').onclick = () => enviarConfirmacao(entry, true);
+  dupBox.scrollIntoView({ behavior:'smooth', block:'center' });
+}
 
 /* ---------------------- painel do organizador ---------------------- */
 let families = [];
@@ -906,11 +1054,23 @@ async function loadGuestList(){
     return;
   }
 
+  if(!organizerPin){ showPage('invite'); openPinGate(); return; }
+
   btn.disabled = true;
   listContent.innerHTML = '<div class="loading">Carregando confirmações…</div>';
 
   try{
-    families = await apiList();
+    const data = await api({ action:'list', pin: organizerPin });
+
+    if(data.pinInvalido){   // o PIN mudou no servidor desde que entramos
+      sairDoPainel();
+      openPinGate();
+      setPinError('O código mudou. Digite o novo.');
+      return;
+    }
+    if(!data.ok) throw new Error(data.error || 'resposta inválida');
+
+    families = data.families || [];
     renderList();
   }catch(err){
     console.error(err);
@@ -925,6 +1085,51 @@ async function loadGuestList(){
       </div>`;
   }finally{
     btn.disabled = false;
+  }
+}
+
+/* ---------------------- exclusão ---------------------- */
+/* Os botões usam data-attribute + delegação em vez de onclick inline:
+   nome de convidado pode conter aspas e quebraria o atributo. */
+document.getElementById('listContent').addEventListener('click', (e) => {
+  const bFam = e.target.closest('[data-del-familia]');
+  if(bFam) return excluirFamilia(bFam.dataset.delFamilia, bFam.dataset.nome);
+
+  const bCon = e.target.closest('[data-del-convidado]');
+  if(bCon) return excluirConvidado(bCon.dataset.delConvidado, bCon.dataset.nome);
+});
+
+async function excluirFamilia(grupo, nome){
+  if(!confirm(`Excluir a confirmação de ${nome}?\n\nTodos os convidados dessa confirmação saem da lista. Não dá para desfazer.`)) return;
+  await executarExclusao({ grupo });
+}
+
+async function excluirConvidado(id, nome){
+  if(!confirm(`Remover ${nome} da lista?\n\nNão dá para desfazer.`)) return;
+  await executarExclusao({ id });
+}
+
+async function executarExclusao(alvo){
+  const listContent = document.getElementById('listContent');
+  listContent.style.opacity = '.5';
+
+  try{
+    const data = await api(Object.assign({ action:'delete', pin: organizerPin }, alvo));
+
+    if(data.pinInvalido){
+      sairDoPainel();
+      openPinGate();
+      setPinError('O código mudou. Digite o novo.');
+      return;
+    }
+    if(!data.ok) throw new Error(data.error || 'resposta inválida');
+
+    await loadGuestList();
+  }catch(err){
+    console.error(err);
+    alert('Não consegui excluir agora. Verifique sua internet e tente de novo.');
+  }finally{
+    listContent.style.opacity = '';
   }
 }
 
@@ -970,7 +1175,14 @@ function renderList(){
       const badge = g.isChild
         ? `<span class="badge kid">${g.age} ano${g.age === 1 ? '' : 's'}</span>`
         : `<span class="badge adult">adulto</span>`;
-      return `<li><span class="who">${escapeHtml(g.name)}</span>${badge}</li>`;
+      return `
+        <li>
+          <span class="who">${escapeHtml(g.name)}</span>
+          ${badge}
+          <button class="del-guest" title="Remover da lista"
+                  data-del-convidado="${escapeHtml(g.id)}"
+                  data-nome="${escapeHtml(g.name)}">×</button>
+        </li>`;
     }).join('');
 
     return `
@@ -983,6 +1195,9 @@ function renderList(){
           <span class="fam-count">${guests.length} ${guests.length === 1 ? 'pessoa' : 'pessoas'}</span>
         </div>
         <ul>${items}</ul>
+        <button class="del-family"
+                data-del-familia="${escapeHtml(fam.grupo)}"
+                data-nome="${escapeHtml(fam.responsavel)}">Excluir confirmação</button>
       </div>`;
   }).join('');
 
@@ -999,10 +1214,15 @@ function formatWhen(iso){
          ' às ' + d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
 }
 
+/* Escapa também aspas: o resultado vai tanto em texto quanto dentro de
+   atributos (data-nome="…"), e um nome com aspas escaparia do atributo. */
 function escapeHtml(str){
-  const div = document.createElement('div');
-  div.textContent = str == null ? '' : String(str);
-  return div.innerHTML;
+  return String(str == null ? '' : str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
 }
 </script>
 
