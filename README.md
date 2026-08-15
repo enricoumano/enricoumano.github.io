@@ -132,7 +132,7 @@ O PIN fica guardado enquanto a aba estiver aberta; **Sair do painel** esquece.
 | --- | --- |
 | Data/Hora | quando a confirmação foi enviada |
 | Grupo | identifica a família — todas as pessoas de um mesmo envio compartilham |
-| Responsável | quem preencheu |
+| Responsável | o **primeiro** nome da confirmação, usado como rótulo do grupo |
 | Convidado | nome da pessoa (uma linha por pessoa) |
 | Tipo | `Adulto` ou `Criança` |
 | Idade | preenchido só para crianças |

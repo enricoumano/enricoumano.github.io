@@ -685,11 +685,6 @@
     <p class="subtitle">Preencha os nomes de quem vai celebrar o 1 aninho do Enrico 🐮🐷🐔<br>Se for criança, informe a idade.</p>
 
     <form id="rsvpForm">
-      <div class="field">
-        <label for="responsavel">Seu nome (responsável pela confirmação)</label>
-        <input type="text" id="responsavel" placeholder="Ex: Família Silva" required>
-      </div>
-
       <div class="divider">Convidados</div>
       <div id="guestsContainer"></div>
       <button type="button" class="add-guest" onclick="addGuest()">+ Adicionar convidado</button>
@@ -940,7 +935,6 @@ document.getElementById('rsvpForm').addEventListener('submit', async function(e)
     return;
   }
 
-  const responsavel = document.getElementById('responsavel').value.trim();
   const rows = document.querySelectorAll('.guest-row');
 
   if(rows.length === 0){
@@ -964,9 +958,12 @@ document.getElementById('rsvpForm').addEventListener('submit', async function(e)
     guests.push({ name, isChild, age: isChild ? Number(ageInput) : null });
   }
 
+  /* O primeiro nome da lista vira o responsável. Ele é só o rótulo que agrupa
+     a confirmação na planilha e no painel — não existe mais campo separado,
+     que confundia quem preenchia. */
   enviarConfirmacao({
     action: 'save',
-    responsavel: responsavel || 'Convidado',
+    responsavel: guests[0].name,
     guests,
     submittedAt: new Date().toISOString()
   }, false);
