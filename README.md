@@ -37,6 +37,19 @@ Organizador digita o PIN ──POST {action:'list'}──►──────�
    repositório e cole no lugar.
 4. Clique no ícone de salvar (💾).
 
+> **Se aparecer "Sorry, unable to open the file at this time"** ao clicar em
+> Extensões → Apps Script, quase sempre é **mais de uma conta Google logada no
+> mesmo navegador**: o editor abre na conta padrão, e a planilha é de outra.
+>
+> - Teste numa janela anônima, logado só na conta dona da planilha.
+> - Se o erro persistir e a conta for corporativa (Workspace), pode ser o
+>   administrador do domínio ter desativado o Apps Script. Nesse caso use uma
+>   conta pessoal `@gmail.com`.
+> - Alternativa que não depende desse menu: crie o script **avulso** em
+>   <https://script.google.com/home/projects/create> e preencha a constante
+>   `SPREADSHEET_ID` no início do `apps-script.gs` com o ID da planilha (o
+>   pedaço da URL entre `/d/` e `/edit`). O restante do passo a passo é igual.
+
 ### 3. Definir o PIN do organizador
 
 O PIN mora no servidor, não na página. Se você não fizer nada, ele é `2611`.

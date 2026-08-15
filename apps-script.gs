@@ -20,6 +20,17 @@
 const SHEET_NAME = 'Confirmações';
 const HEADERS = ['Data/Hora', 'Grupo', 'Responsável', 'Convidado', 'Tipo', 'Idade', 'ID'];
 
+/**
+ * Deixe vazio se o script foi criado pela planilha (Extensões -> Apps Script).
+ *
+ * Se você criou o script avulso, em script.google.com, cole aqui o ID da
+ * planilha. Ele fica no meio da URL dela:
+ *   docs.google.com/spreadsheets/d/ ESTE_PEDAÇO_AQUI /edit
+ * Script avulso não tem "planilha ativa", então sem o ID ele não acha onde
+ * escrever.
+ */
+const SPREADSHEET_ID = '';
+
 const PIN_PADRAO = '2611';
 
 /**
@@ -229,8 +240,23 @@ function lerLinhas_(sheet) {
   return resultado;
 }
 
+/** Funciona tanto no script vinculado à planilha quanto no script avulso. */
+function getPlanilha_() {
+  const id = String(SPREADSHEET_ID || '').trim();
+  if (id) return SpreadsheetApp.openById(id);
+
+  const ativa = SpreadsheetApp.getActiveSpreadsheet();
+  if (!ativa) {
+    throw new Error(
+      'Não achei a planilha. Se o script foi criado avulso (em script.google.com), ' +
+      'preencha SPREADSHEET_ID no início deste arquivo com o ID da planilha.'
+    );
+  }
+  return ativa;
+}
+
 function getSheet_() {
-  const ss = SpreadsheetApp.getActiveSpreadsheet();
+  const ss = getPlanilha_();
   let sheet = ss.getSheetByName(SHEET_NAME);
 
   if (!sheet) sheet = ss.insertSheet(SHEET_NAME);
