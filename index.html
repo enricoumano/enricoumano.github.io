@@ -1,0 +1,951 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aniversário do Enrico — Confirme presença</title>
+<meta name="description" content="Enrico faz 1 aninho! Festa dia 21/11/2026 às 11h. Confirme sua presença por aqui.">
+<meta name="theme-color" content="#a8bb8b">
+
+<!-- preview do link (WhatsApp, Instagram, etc.) -->
+<meta property="og:type" content="website">
+<meta property="og:locale" content="pt_BR">
+<meta property="og:site_name" content="Aniversário do Enrico">
+<meta property="og:title" content="Enrico faz 1 aninho! 🐮">
+<meta property="og:description" content="21/11/2026 às 11h. Toque para confirmar sua presença na fazendinha do Enrico.">
+<meta property="og:url" content="https://enricoumano.github.io/enricoumano/">
+<meta property="og:image" content="https://enricoumano.github.io/enricoumano/convite.jpg">
+<meta property="og:image:width" content="1054">
+<meta property="og:image:height" content="1492">
+<meta property="og:image:alt" content="Convite do aniversário de 1 ano do Enrico, tema fazendinha">
+<meta name="twitter:card" content="summary_large_image">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🐮</text></svg>">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Bitter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#f6f1e2;
+    --cream-deep:#efe6c9;
+    --sage-light:#e4e8d4;
+    --sage:#a8bb8b;
+    --sage-deep:#7c9463;
+    --wood:#9a6a3c;
+    --wood-dark:#6e4726;
+    --wood-shadow:#4a2f18;
+    --barn:#a4372b;
+    --ink:#3a2212;
+    --ink-soft:#5c4530;
+    --gold:#c9a227;
+    --ok-bg:#eef4e6;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:'Bitter', serif;
+    color:var(--ink);
+    background:
+      repeating-linear-gradient(90deg, var(--sage-light) 0 28px, var(--cream) 28px 56px),
+      repeating-linear-gradient(0deg, rgba(124,148,99,0.35) 0 28px, transparent 28px 56px);
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+  }
+  .display{font-family:'Fredoka', sans-serif;}
+
+  /* ---------- shared page shell ---------- */
+  .page{
+    width:100%;
+    max-width:640px;
+    min-height:100vh;
+    display:none;
+    flex-direction:column;
+    align-items:center;
+    padding:28px 16px 56px;
+    animation:fadeIn .5s ease;
+  }
+  .page.active{display:flex;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(8px);}to{opacity:1;transform:translateY(0);}}
+
+  /* ---------- hanging wood sign header ---------- */
+  .sign-wrap{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    margin-bottom:18px;
+  }
+  .rope{
+    width:6px;height:34px;
+    background:linear-gradient(90deg,#b98b4e,#8a5f2f,#b98b4e);
+    border-radius:3px;
+    position:relative;
+  }
+  .ropes{display:flex; gap:130px; height:34px;}
+  .sign{
+    background:
+      repeating-linear-gradient(90deg, rgba(0,0,0,0.05) 0 2px, transparent 2px 26px),
+      linear-gradient(180deg,#b9804a,#8a5a30);
+    border:3px solid var(--wood-shadow);
+    border-radius:14px;
+    padding:12px 30px;
+    box-shadow:0 6px 0 rgba(0,0,0,0.15);
+    margin-top:-4px;
+  }
+  .sign h1{
+    margin:0;
+    text-align:center;
+    color:var(--wood-shadow);
+    font-size:clamp(22px,6vw,32px);
+    letter-spacing:1px;
+    text-shadow:1px 1px 0 rgba(255,255,255,0.15);
+  }
+
+  /* ---------- card ---------- */
+  .card{
+    width:100%;
+    background:var(--cream);
+    border-radius:22px;
+    border:2px dashed var(--sage-deep);
+    padding:22px 20px 28px;
+    position:relative;
+    box-shadow:0 8px 24px rgba(74,47,24,0.12);
+  }
+  .card::before{
+    content:'';
+    position:absolute; inset:8px;
+    border:1.5px solid rgba(124,148,99,0.35);
+    border-radius:16px;
+    pointer-events:none;
+  }
+
+  /* ---------- PAGE 1 : invite ---------- */
+  #page-invite{padding-top:0;}
+  .invite-frame{
+    width:100%;
+    border-radius:18px;
+    overflow:hidden;
+    box-shadow:0 10px 30px rgba(74,47,24,0.25);
+    border:4px solid var(--cream);
+  }
+  .invite-frame img{width:100%; display:block;}
+
+  .cta-wrap{
+    margin-top:26px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
+  }
+  .btn{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:17px;
+    letter-spacing:.3px;
+    color:#fff6e8;
+    background:linear-gradient(180deg,#a9713f,var(--wood-dark));
+    border:none;
+    border-radius:999px;
+    padding:14px 34px;
+    cursor:pointer;
+    box-shadow:0 5px 0 var(--wood-shadow), 0 10px 18px rgba(0,0,0,0.2);
+    transition:transform .12s ease, box-shadow .12s ease;
+  }
+  .btn:hover{transform:translateY(-2px);}
+  .btn:active{transform:translateY(2px); box-shadow:0 2px 0 var(--wood-shadow);}
+  .btn.secondary{
+    background:linear-gradient(180deg,#8fa377,var(--sage-deep));
+    box-shadow:0 5px 0 #5b7148, 0 10px 18px rgba(0,0,0,0.15);
+    font-size:14px;
+    padding:10px 22px;
+  }
+  .btn.secondary:active{box-shadow:0 2px 0 #5b7148;}
+  .hint{
+    font-size:13px;
+    color:var(--ink-soft);
+    text-align:center;
+  }
+
+  /* ---------- PAGE 2 : form ---------- */
+  .subtitle{
+    text-align:center;
+    color:var(--ink-soft);
+    margin:0 0 20px;
+    font-size:15px;
+    line-height:1.5;
+  }
+  .field{margin-bottom:16px;}
+  .field label{
+    display:block;
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    color:var(--wood-dark);
+    margin-bottom:6px;
+  }
+  .field input[type=text], .field input[type=number]{
+    width:100%;
+    border:2px solid var(--sage);
+    background:#fffdf6;
+    border-radius:10px;
+    padding:10px 12px;
+    font-family:'Bitter', serif;
+    font-size:15px;
+    color:var(--ink);
+  }
+  .field input:focus{outline:2px solid var(--gold); border-color:var(--gold);}
+
+  .divider{
+    display:flex; align-items:center; gap:10px;
+    margin:22px 0 14px;
+    color:var(--sage-deep);
+    font-family:'Fredoka',sans-serif;
+    font-size:13px;
+    font-weight:600;
+    text-transform:uppercase;
+    letter-spacing:.5px;
+  }
+  .divider::before,.divider::after{
+    content:'';flex:1;height:2px;
+    background:repeating-linear-gradient(90deg,var(--sage) 0 6px, transparent 6px 11px);
+  }
+
+  .guest-row{
+    background:#fffdf6;
+    border:1.5px solid var(--sage);
+    border-radius:14px;
+    padding:14px 14px 10px;
+    margin-bottom:12px;
+    position:relative;
+  }
+  .guest-row .remove-guest{
+    position:absolute; top:8px; right:10px;
+    background:none; border:none; cursor:pointer;
+    color:var(--barn); font-size:18px; font-weight:700;
+    line-height:1;
+    padding:2px 6px;
+  }
+  .guest-row .row-num{
+    font-family:'Fredoka',sans-serif;
+    font-weight:600; font-size:12px;
+    color:var(--sage-deep); margin-bottom:8px;
+  }
+  .child-toggle{
+    display:flex; align-items:center; gap:8px;
+    margin:10px 0 4px;
+    font-size:14px;
+    font-family:'Fredoka',sans-serif;
+    color:var(--ink-soft);
+  }
+  .child-toggle input{width:17px; height:17px; accent-color:var(--sage-deep);}
+  .age-field{display:none; margin-top:8px;}
+  .age-field.show{display:block;}
+
+  .add-guest{
+    width:100%;
+    background:transparent;
+    border:2px dashed var(--sage-deep);
+    color:var(--sage-deep);
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    border-radius:12px;
+    padding:12px;
+    cursor:pointer;
+    font-size:14.5px;
+    margin-bottom:6px;
+  }
+  .add-guest:hover{background:var(--sage-light);}
+
+  .submit-btn{
+    width:100%;
+    margin-top:18px;
+  }
+
+  .msg{
+    display:none;
+    margin-top:14px;
+    padding:12px 14px;
+    border-radius:12px;
+    font-size:14px;
+    text-align:center;
+    font-family:'Fredoka',sans-serif;
+  }
+  .msg.error{display:block; background:#fbe6e2; color:#8a3323;}
+
+  .success-box{
+    display:none;
+    text-align:center;
+  }
+  .success-box.show{display:block;}
+  .success-box .emoji{font-size:44px;}
+  .success-box h2{
+    color:var(--wood-dark);
+    margin:6px 0 4px;
+  }
+  .success-box p{color:var(--ink-soft); font-size:14.5px;}
+
+  .back-link{
+    margin-top:22px;
+    font-family:'Fredoka',sans-serif;
+    font-size:13px;
+    color:var(--sage-deep);
+    text-decoration:none;
+    cursor:pointer;
+    border:none;
+    background:none;
+  }
+
+  /* ---------- PAGE 3 : guest list ---------- */
+  .stats{
+    display:flex; gap:10px;
+    margin-bottom:18px;
+  }
+  .stat{
+    flex:1;
+    background:#fffdf6;
+    border:1.5px solid var(--sage);
+    border-radius:14px;
+    text-align:center;
+    padding:14px 6px;
+  }
+  .stat .num{
+    font-family:'Fredoka',sans-serif;
+    font-weight:700;
+    font-size:26px;
+    color:var(--wood-dark);
+    display:block;
+  }
+  .stat .lbl{
+    font-size:11.5px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:.4px;
+  }
+  .family-block{
+    background:#fffdf6;
+    border:1.5px solid var(--sage);
+    border-radius:14px;
+    padding:12px 16px;
+    margin-bottom:10px;
+  }
+  .family-block .fam-name{
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    color:var(--wood-dark);
+    font-size:14px;
+    margin-bottom:6px;
+  }
+  .family-block ul{margin:0; padding-left:18px;}
+  .family-block li{font-size:14px; margin-bottom:2px;}
+  .family-block li .age-tag{
+    color:var(--sage-deep);
+    font-size:12.5px;
+    font-family:'Fredoka',sans-serif;
+  }
+  .empty-state{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14px;
+    padding:30px 10px;
+  }
+  .loading{
+    text-align:center;
+    color:var(--ink-soft);
+    font-size:14px;
+    padding:20px;
+  }
+
+  .top-nav{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    margin-bottom:8px;
+  }
+
+  /* ---------- organizer-only access ---------- */
+  .organizer-link{
+    margin-top:34px;
+    background:none;
+    border:none;
+    color:#b9b09a;
+    font-family:'Bitter', serif;
+    font-size:11.5px;
+    text-decoration:underline;
+    cursor:pointer;
+    opacity:.7;
+  }
+  .pin-overlay{
+    display:none;
+    position:fixed; inset:0;
+    background:rgba(58,34,18,0.55);
+    z-index:50;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+  }
+  .pin-overlay.show{display:flex;}
+  .pin-box{
+    background:var(--cream);
+    border-radius:18px;
+    border:2px dashed var(--sage-deep);
+    padding:24px 22px;
+    width:100%;
+    max-width:320px;
+    text-align:center;
+  }
+  .pin-box h3{
+    font-family:'Fredoka',sans-serif;
+    color:var(--wood-dark);
+    margin:0 0 6px;
+  }
+  .pin-box p{
+    font-size:13px;
+    color:var(--ink-soft);
+    margin:0 0 14px;
+  }
+  .pin-box input{
+    width:100%;
+    text-align:center;
+    letter-spacing:4px;
+    font-size:20px;
+    border:2px solid var(--sage);
+    border-radius:10px;
+    padding:10px;
+    margin-bottom:10px;
+    font-family:'Bitter',serif;
+  }
+  .pin-box input:focus{outline:2px solid var(--gold); border-color:var(--gold);}
+  .pin-error{
+    display:none;
+    color:#8a3323;
+    font-size:12.5px;
+    margin-bottom:10px;
+  }
+  .pin-error.show{display:block;}
+  .pin-actions{display:flex; gap:8px; margin-top:4px;}
+  .pin-actions .btn{flex:1; padding:10px 12px; font-size:14px;}
+  .pin-actions .btn.secondary{flex:1;}
+
+  /* ---------- PAGE 3 : melhorias do painel do organizador ---------- */
+  .list-toolbar{
+    display:flex;
+    gap:8px;
+    margin-bottom:14px;
+  }
+  .list-toolbar input{
+    flex:1;
+    min-width:0;
+    border:2px solid var(--sage);
+    background:#fffdf6;
+    border-radius:10px;
+    padding:9px 12px;
+    font-family:'Bitter', serif;
+    font-size:14px;
+    color:var(--ink);
+  }
+  .list-toolbar input:focus{outline:2px solid var(--gold); border-color:var(--gold);}
+  .icon-btn{
+    flex:0 0 auto;
+    border:2px solid var(--sage);
+    background:#fffdf6;
+    color:var(--sage-deep);
+    border-radius:10px;
+    padding:9px 14px;
+    font-family:'Fredoka',sans-serif;
+    font-weight:600;
+    font-size:13.5px;
+    cursor:pointer;
+  }
+  .icon-btn:hover{background:var(--sage-light);}
+  .icon-btn:disabled{opacity:.5; cursor:default;}
+
+  .family-block .fam-head{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:8px;
+  }
+  .family-block .fam-count{
+    flex:0 0 auto;
+    font-family:'Fredoka',sans-serif;
+    font-size:11.5px;
+    font-weight:600;
+    color:var(--cream);
+    background:var(--sage-deep);
+    border-radius:999px;
+    padding:3px 9px;
+    white-space:nowrap;
+  }
+  .family-block .fam-when{
+    display:block;
+    font-family:'Bitter',serif;
+    font-size:11.5px;
+    font-weight:400;
+    color:#9c8a72;
+    margin-top:2px;
+  }
+  .family-block ul{list-style:none; padding-left:0;}
+  .family-block li{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:5px 0;
+    border-top:1px dashed rgba(124,148,99,0.35);
+  }
+  .family-block li:first-child{border-top:none;}
+  .who{flex:1; min-width:0;}
+  .badge{
+    flex:0 0 auto;
+    font-family:'Fredoka',sans-serif;
+    font-size:11px;
+    font-weight:600;
+    border-radius:999px;
+    padding:2px 8px;
+    white-space:nowrap;
+  }
+  .badge.kid{background:#f3e6c8; color:#8a6a1f;}
+  .badge.adult{background:var(--sage-light); color:var(--sage-deep);}
+
+  .list-footer{
+    text-align:center;
+    font-size:12px;
+    color:var(--ink-soft);
+    margin-top:14px;
+  }
+  .error-state{
+    background:#fbe6e2;
+    color:#8a3323;
+    border-radius:12px;
+    padding:14px;
+    font-size:13.5px;
+    text-align:center;
+    line-height:1.5;
+  }
+  .setup-warning{
+    background:#fdf3d6;
+    border:1.5px solid var(--gold);
+    color:#7a5c12;
+    border-radius:12px;
+    padding:12px 14px;
+    font-size:13px;
+    line-height:1.5;
+    margin-bottom:14px;
+  }
+  .setup-warning code{
+    background:rgba(0,0,0,0.06);
+    border-radius:4px;
+    padding:1px 5px;
+    font-size:12px;
+  }
+</style>
+</head>
+<body>
+
+<!-- ================= PAGE 1 : INVITE ================= -->
+<section id="page-invite" class="page active">
+  <div class="invite-frame">
+    <img src="convite.jpg" width="1054" height="1492"
+         alt="Convite do aniversário de 1 ano do Enrico — 21/11/2026 às 11h">
+  </div>
+  <div class="cta-wrap">
+    <button class="btn" onclick="goTo('form')">Confirmar Presença ▸</button>
+    <p class="hint">Toque no botão acima para confirmar quem vai à festa 🐴</p>
+  </div>
+  <button class="organizer-link" onclick="openPinGate()">Área do organizador</button>
+</section>
+
+<!-- ================= PAGE 2 : FORM ================= -->
+<section id="page-form" class="page">
+  <div class="sign-wrap">
+    <div class="ropes"><div class="rope"></div><div class="rope"></div></div>
+    <div class="sign"><h1 class="display">Confirmar Presença</h1></div>
+  </div>
+
+  <div class="card">
+    <p class="subtitle">Preencha os nomes de quem vai celebrar o 1 aninho do Enrico 🐮🐷🐔<br>Se for criança, informe a idade.</p>
+
+    <form id="rsvpForm">
+      <div class="field">
+        <label for="responsavel">Seu nome (responsável pela confirmação)</label>
+        <input type="text" id="responsavel" placeholder="Ex: Família Silva" required>
+      </div>
+
+      <div class="divider">Convidados</div>
+      <div id="guestsContainer"></div>
+      <button type="button" class="add-guest" onclick="addGuest()">+ Adicionar convidado</button>
+
+      <div id="formMsg" class="msg"></div>
+
+      <button type="submit" class="btn submit-btn" id="submitBtn">Confirmar presença ✓</button>
+    </form>
+
+    <div id="successBox" class="success-box">
+      <div class="emoji">🎉</div>
+      <h2 class="display">Presença confirmada!</h2>
+      <p>Obrigado por confirmar. Nos vemos na festa do Enrico!</p>
+    </div>
+
+    <div style="text-align:center;">
+      <button class="back-link" onclick="goTo('invite')">← Voltar ao convite</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PAGE 3 : GUEST LIST ================= -->
+<section id="page-list" class="page">
+  <div class="sign-wrap">
+    <div class="ropes"><div class="rope"></div><div class="rope"></div></div>
+    <div class="sign"><h1 class="display">Confirmados</h1></div>
+  </div>
+
+  <div class="card">
+    <div class="stats">
+      <div class="stat"><span class="num" id="statFamilies">–</span><span class="lbl">Famílias</span></div>
+      <div class="stat"><span class="num" id="statTotal">–</span><span class="lbl">Convidados</span></div>
+      <div class="stat"><span class="num" id="statKids">–</span><span class="lbl">Crianças</span></div>
+    </div>
+
+    <div class="list-toolbar">
+      <input type="search" id="listSearch" placeholder="Buscar por nome…" oninput="renderList()">
+      <button class="icon-btn" id="refreshBtn" onclick="loadGuestList()">↻ Atualizar</button>
+    </div>
+
+    <div id="listContent">
+      <div class="loading">Carregando confirmações…</div>
+    </div>
+
+    <div class="list-footer" id="listFooter"></div>
+
+    <div style="text-align:center;">
+      <button class="back-link" onclick="goTo('invite')">← Voltar ao convite</button>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PIN GATE (organizer only) ================= -->
+<div class="pin-overlay" id="pinOverlay">
+  <div class="pin-box">
+    <h3 class="display">Área do organizador</h3>
+    <p>Digite o código para ver os convidados confirmados.</p>
+    <input type="password" inputmode="numeric" id="pinInput" placeholder="••••" maxlength="8">
+    <div class="pin-error" id="pinError">Código incorreto. Tente novamente.</div>
+    <div class="pin-actions">
+      <button class="btn secondary" onclick="closePinGate()">Cancelar</button>
+      <button class="btn" onclick="checkPin()">Entrar</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =====================================================================
+   CONFIGURAÇÃO
+   ---------------------------------------------------------------------
+   APPS_SCRIPT_URL: cole aqui a URL do "app da web" publicado no
+   Google Apps Script (termina em /exec). Veja o README.md do repositório.
+   ===================================================================== */
+const CONFIG = {
+  APPS_SCRIPT_URL: "COLE_AQUI_A_URL_DO_APPS_SCRIPT",
+  ORGANIZER_PIN: "2611"
+};
+
+const isConfigured = () => /^https:\/\/script\.google\.com\//.test(CONFIG.APPS_SCRIPT_URL);
+
+/* ---------------------- camada de dados (Google Sheets) ---------------------- */
+/* Enviamos o corpo como texto puro de propósito: assim o navegador trata a
+   requisição como "simples" e não dispara o preflight OPTIONS, que o Apps
+   Script não sabe responder. */
+async function apiSave(entry){
+  const res = await fetch(CONFIG.APPS_SCRIPT_URL, {
+    method: 'POST',
+    body: JSON.stringify(entry),
+    redirect: 'follow'
+  });
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  if(!data.ok) throw new Error(data.error || 'resposta inválida');
+  return data;
+}
+
+async function apiList(){
+  const url = CONFIG.APPS_SCRIPT_URL + '?action=list&t=' + Date.now();
+  const res = await fetch(url, { redirect: 'follow' });
+  if(!res.ok) throw new Error('HTTP ' + res.status);
+  const data = await res.json();
+  if(!data.ok) throw new Error(data.error || 'resposta inválida');
+  return data.families || [];
+}
+
+/* ---------------------- PIN do organizador ---------------------- */
+function openPinGate(){
+  document.getElementById('pinOverlay').classList.add('show');
+  document.getElementById('pinError').classList.remove('show');
+  const input = document.getElementById('pinInput');
+  input.value = '';
+  setTimeout(() => input.focus(), 100);
+}
+function closePinGate(){
+  document.getElementById('pinOverlay').classList.remove('show');
+}
+function checkPin(){
+  const val = document.getElementById('pinInput').value.trim();
+  if(val === CONFIG.ORGANIZER_PIN){
+    closePinGate();
+    goTo('list');
+  } else {
+    document.getElementById('pinError').classList.add('show');
+  }
+}
+document.getElementById('pinInput').addEventListener('keydown', (e) => {
+  if(e.key === 'Enter') checkPin();
+});
+
+/* ---------------------- formulário ---------------------- */
+let guestCount = 0;
+
+function addGuest(){
+  guestCount++;
+  const id = guestCount;
+  const container = document.getElementById('guestsContainer');
+  const row = document.createElement('div');
+  row.className = 'guest-row';
+  row.id = 'guest-' + id;
+  row.innerHTML = `
+    <button type="button" class="remove-guest" onclick="removeGuest(${id})" title="Remover">×</button>
+    <div class="row-num">Convidado ${id}</div>
+    <div class="field" style="margin-bottom:0;">
+      <label>Nome</label>
+      <input type="text" class="guest-name" placeholder="Nome completo" required>
+    </div>
+    <label class="child-toggle">
+      <input type="checkbox" class="guest-child" onchange="toggleAge(${id}, this)">
+      É criança?
+    </label>
+    <div class="field age-field" id="age-${id}">
+      <label>Idade</label>
+      <input type="number" class="guest-age" min="0" max="17" placeholder="Idade em anos">
+    </div>
+  `;
+  container.appendChild(row);
+}
+
+function removeGuest(id){
+  const row = document.getElementById('guest-' + id);
+  if(row) row.remove();
+}
+
+function toggleAge(id, checkbox){
+  const ageField = document.getElementById('age-' + id);
+  if(checkbox.checked){
+    ageField.classList.add('show');
+    ageField.querySelector('input').required = true;
+  } else {
+    ageField.classList.remove('show');
+    ageField.querySelector('input').required = false;
+    ageField.querySelector('input').value = '';
+  }
+}
+
+// começa com uma linha de convidado
+addGuest();
+
+function goTo(name){
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('page-' + name).classList.add('active');
+  window.scrollTo({top:0, behavior:'smooth'});
+  if(name === 'list'){ loadGuestList(); }
+}
+
+let sending = false;
+
+document.getElementById('rsvpForm').addEventListener('submit', async function(e){
+  e.preventDefault();
+  if(sending) return;
+
+  const msgEl = document.getElementById('formMsg');
+  const btn = document.getElementById('submitBtn');
+  msgEl.style.display = 'none';
+
+  const fail = (text) => {
+    msgEl.textContent = text;
+    msgEl.className = 'msg error';
+    msgEl.style.display = 'block';
+  };
+
+  if(!isConfigured()){
+    fail('O formulário ainda não foi conectado à planilha. Avise o organizador.');
+    return;
+  }
+
+  const responsavel = document.getElementById('responsavel').value.trim();
+  const rows = document.querySelectorAll('.guest-row');
+
+  if(rows.length === 0){
+    fail('Adicione pelo menos um convidado.');
+    return;
+  }
+
+  const guests = [];
+  for(const row of rows){
+    const name = row.querySelector('.guest-name').value.trim();
+    const isChild = row.querySelector('.guest-child').checked;
+    const ageInput = row.querySelector('.guest-age').value;
+    if(!name){
+      fail('Preencha o nome de todos os convidados.');
+      return;
+    }
+    if(isChild && !ageInput){
+      fail('Informe a idade das crianças.');
+      return;
+    }
+    guests.push({ name, isChild, age: isChild ? Number(ageInput) : null });
+  }
+
+  const entry = {
+    responsavel: responsavel || 'Convidado',
+    guests,
+    submittedAt: new Date().toISOString()
+  };
+
+  sending = true;
+  btn.disabled = true;
+  btn.textContent = 'Enviando…';
+
+  try{
+    await apiSave(entry);
+    document.getElementById('rsvpForm').style.display = 'none';
+    document.getElementById('successBox').classList.add('show');
+  }catch(err){
+    console.error(err);
+    fail('Não foi possível salvar agora. Verifique sua internet e tente novamente.');
+  }finally{
+    sending = false;
+    btn.disabled = false;
+    btn.textContent = 'Confirmar presença ✓';
+  }
+});
+
+/* ---------------------- painel do organizador ---------------------- */
+let families = [];
+
+async function loadGuestList(){
+  const listContent = document.getElementById('listContent');
+  const btn = document.getElementById('refreshBtn');
+
+  if(!isConfigured()){
+    listContent.innerHTML = `
+      <div class="setup-warning">
+        <strong>Falta conectar a planilha.</strong><br>
+        Abra o <code>index.html</code> e substitua
+        <code>COLE_AQUI_A_URL_DO_APPS_SCRIPT</code> pela URL do app da web
+        publicado no Google Apps Script. O passo a passo está no
+        <code>README.md</code> do repositório.
+      </div>`;
+    document.getElementById('listFooter').textContent = '';
+    return;
+  }
+
+  btn.disabled = true;
+  listContent.innerHTML = '<div class="loading">Carregando confirmações…</div>';
+
+  try{
+    families = await apiList();
+    renderList();
+  }catch(err){
+    console.error(err);
+    families = [];
+    setStats('–','–','–');
+    document.getElementById('listFooter').textContent = '';
+    listContent.innerHTML = `
+      <div class="error-state">
+        Não consegui carregar a lista agora.<br>
+        Confira se o app da web do Apps Script está publicado com acesso
+        para <strong>“Qualquer pessoa”</strong> e tente novamente.
+      </div>`;
+  }finally{
+    btn.disabled = false;
+  }
+}
+
+function setStats(f, t, k){
+  document.getElementById('statFamilies').textContent = f;
+  document.getElementById('statTotal').textContent = t;
+  document.getElementById('statKids').textContent = k;
+}
+
+function renderList(){
+  const listContent = document.getElementById('listContent');
+  const footer = document.getElementById('listFooter');
+
+  // as estatísticas sempre refletem o total confirmado, não o filtro
+  let totalGuests = 0, totalKids = 0;
+  families.forEach(fam => (fam.guests || []).forEach(g => {
+    totalGuests++;
+    if(g.isChild) totalKids++;
+  }));
+  setStats(families.length, totalGuests, totalKids);
+
+  if(families.length === 0){
+    listContent.innerHTML = '<div class="empty-state">Ainda não há confirmações.<br>Seja o primeiro a confirmar! 🎈</div>';
+    footer.textContent = '';
+    return;
+  }
+
+  const term = document.getElementById('listSearch').value.trim().toLowerCase();
+  const visible = !term ? families : families.filter(fam =>
+    (fam.responsavel || '').toLowerCase().includes(term) ||
+    (fam.guests || []).some(g => (g.name || '').toLowerCase().includes(term))
+  );
+
+  if(visible.length === 0){
+    listContent.innerHTML = '<div class="empty-state">Nenhum confirmado com esse nome.</div>';
+    footer.textContent = '';
+    return;
+  }
+
+  listContent.innerHTML = visible.map(fam => {
+    const guests = fam.guests || [];
+    const items = guests.map(g => {
+      const badge = g.isChild
+        ? `<span class="badge kid">${g.age} ano${g.age === 1 ? '' : 's'}</span>`
+        : `<span class="badge adult">adulto</span>`;
+      return `<li><span class="who">${escapeHtml(g.name)}</span>${badge}</li>`;
+    }).join('');
+
+    return `
+      <div class="family-block">
+        <div class="fam-head">
+          <div class="fam-name">
+            👨‍👩‍👧 ${escapeHtml(fam.responsavel)}
+            <span class="fam-when">confirmou em ${formatWhen(fam.submittedAt)}</span>
+          </div>
+          <span class="fam-count">${guests.length} ${guests.length === 1 ? 'pessoa' : 'pessoas'}</span>
+        </div>
+        <ul>${items}</ul>
+      </div>`;
+  }).join('');
+
+  const adults = totalGuests - totalKids;
+  footer.textContent = term
+    ? `Mostrando ${visible.length} de ${families.length} confirmações.`
+    : `${adults} adulto${adults === 1 ? '' : 's'} e ${totalKids} criança${totalKids === 1 ? '' : 's'}.`;
+}
+
+function formatWhen(iso){
+  const d = new Date(iso);
+  if(isNaN(d)) return '—';
+  return d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' }) +
+         ' às ' + d.toLocaleTimeString('pt-BR', { hour:'2-digit', minute:'2-digit' });
+}
+
+function escapeHtml(str){
+  const div = document.createElement('div');
+  div.textContent = str == null ? '' : String(str);
+  return div.innerHTML;
+}
+</script>
+
+</body>
+</html>

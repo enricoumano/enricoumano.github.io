@@ -1,0 +1,4 @@
+.playwright-mcp/
+.DS_Store
+# arquivo original com a imagem embutida em base64 (substituído por index.html + convite.jpg)
+enrico-confirmacao-presenca.html
